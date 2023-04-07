@@ -6,7 +6,7 @@ const userRouter = require("./routes/userRouter");
 const app = express();
 const PORT = 8080;
 
-connectMongoDB("mongodb://localhost:27017/test-db").then(() => {
+connectMongoDB("mongodb://localhost:27017/crud-test").then(() => {
   console.log("DB Connected!!!");
 });
 

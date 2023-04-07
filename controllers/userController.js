@@ -10,23 +10,20 @@ async function handleGetUserById(req, res) {
   if (!user) return res.status(404).json({ error: "USER NOT FOUND!" });
   return res.json(user);
 }
-async function handleUpdateUserId(req, res) {
+async function handleUpdateUserById(req, res) {
   await User.findByIdAndUpdate(req.params.id);
   return res.json({ status: "SUCESS" });
 }
 
-async function handleDeleteUserId(req, res) {
-  await User.findByIdAndDelete(req.params.id, {
-    lastName: "changed",
-  });
+async function handleDeleteUserById(req, res) {
+  await User.findByIdAndDelete(req.params.id);
   return res.json({ status: "SUCESS" });
 }
 
-async function hamdleCreateNewUser(req, res) {
+async function handleCreateNewUser(req, res) {
   const body = req.body;
   if (
-    !body ||
-    !body.firts_name ||
+    !body.first_name ||
     !body.last_name ||
     !body.email ||
     !body.password
@@ -36,7 +33,7 @@ async function hamdleCreateNewUser(req, res) {
     });
   }
   const result = await User.create({
-    firstName: body.firts_name,
+    firstName: body.first_name,
     lastName: body.last_name,
     email: body.email,
     password: body.password,
@@ -50,7 +47,7 @@ async function hamdleCreateNewUser(req, res) {
 module.exports = {
   handleGetAllUsers,
   handleGetUserById,
-  handleUpdateUserId,
-  handleDeleteUserId,
-  hamdleCreateNewUser,
+  handleUpdateUserById,
+  handleDeleteUserById,
+  handleCreateNewUser,
 };
