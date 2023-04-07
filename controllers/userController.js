@@ -33,8 +33,8 @@ async function handleCreateNewUser(req, res) {
     });
   }
   const result = await User.create({
-    firstName: body.first_name,
-    lastName: body.last_name,
+    firstname: body.first_name,
+    lastname: body.last_name,
     email: body.email,
     password: body.password,
   });
