@@ -22,14 +22,9 @@ async function handleDeleteUserById(req, res) {
 
 async function handleCreateNewUser(req, res) {
   const body = req.body;
-  if (
-    !body.firstname ||
-    !body.lastname ||
-    !body.email ||
-    !body.password
-  ) {
-    return res.status(404).json({
-      message: "ALL FIELDS ARE REQUIRED!!!",
+  if (!body || !body.firstname || !body.lastname || !body.email || !body.password) {
+    return res.status(400).json({
+      message: "All fields are required",
     });
   }
   const result = await User.create({
@@ -39,10 +34,11 @@ async function handleCreateNewUser(req, res) {
     password: body.password,
   });
   return res.status(201).json({
-    message: "SUCESS!",
+    message: "User created successfully",
     id: result._id,
   });
 }
+
 
 module.exports = {
   handleGetAllUsers,
