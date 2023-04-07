@@ -23,8 +23,8 @@ async function handleDeleteUserById(req, res) {
 async function handleCreateNewUser(req, res) {
   const body = req.body;
   if (
-    !body.first_name ||
-    !body.last_name ||
+    !body.firstname ||
+    !body.lastname ||
     !body.email ||
     !body.password
   ) {
@@ -33,8 +33,8 @@ async function handleCreateNewUser(req, res) {
     });
   }
   const result = await User.create({
-    firstname: body.first_name,
-    lastname: body.last_name,
+    firstname: body.firstname,
+    lastname: body.lastname,
     email: body.email,
     password: body.password,
   });
