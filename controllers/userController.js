@@ -70,8 +70,7 @@ const handleCreateNewUser = async (req, res) => {
       password: body.password,
     });
     return res.status(201).json({
-      message: "User created successfully",
-      id: result._id,
+      message: "User created successfully"
     });
   } catch (error) {
     console.log(error);
