@@ -41,7 +41,7 @@ const handleSignin = async (req, res) => {
     if (!validPassword) {
         return res.status(404).send("INVALID")
     }
-    const token = jwt.sign({ _id: user._id }, process.envTOKEN_SECRET);
+    const token = jwt.sign({ _id: user._id }, process.env.TOKEN_SECRET);
     res.header("auth-token", token).send(token);
 };
 
