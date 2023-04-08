@@ -2,6 +2,7 @@ const express = require("express");
 const { connectMongoDB } = require("./config/connection");
 
 const userRouter = require("./routes/userRouter");
+const authRouter = require("./routes/authRouter");
 
 const app = express();
 const PORT = 8080;
@@ -16,6 +17,7 @@ connectMongoDB("mongodb://localhost:27017/crud-test").then(() => {
 });
 
 app.use("/api/users", userRouter);
+app.use("/users", authRouter);
 
 app.listen(PORT, () => {
   console.log(`Server started at http://localhost:${PORT}/`);
