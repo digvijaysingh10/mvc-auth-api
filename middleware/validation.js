@@ -1,19 +1,33 @@
-const joi = require("@hapi/joi");
+const yup = require("yup");
 
-const registerValidation = data => {
-    const schema = {
-        firstname: joi.string().min(2).required(),
-        lastname: joi.string().min(2).required(),
-        email: joi.string().email().required(),
-        password: joi.string().min(8).required()
-    };
-    return joi.validate(data, schema);
+const registerValidation = async (data) => {
+  const schema = yup.object().shape({
+    firstname: yup.string().min(2).required(),
+    lastname: yup.string().min(2).required(),
+    email: yup.string().email().required(),
+    password: yup.string().min(8).required(),
+  });
+
+  try {
+    await schema.validate(data);
+    return true;
+  } catch (error) {
+    return false;
+  }
 };
-const loginValidation = data => {
-    const schema = {
-        email: joi.string().email().required(),
-        password: joi.string().min(8).required()
-    };
-    return joi.validate(data, schema);
+
+const loginValidation = async (data) => {
+  const schema = yup.object().shape({
+    email: yup.string().email().required(),
+    password: yup.string().min(8).required(),
+  });
+
+  try {
+    await schema.validate(data);
+    return true;
+  } catch (error) {
+    return false;
+  }
 };
-module.exports = { registerValidation, loginValidation }
+
+module.exports = { registerValidation, loginValidation };
