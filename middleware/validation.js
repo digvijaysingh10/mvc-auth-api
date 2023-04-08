@@ -7,13 +7,13 @@ const registerValidation = data => {
         email: joi.string().email().required(),
         password: joi.string().min(8).required()
     };
-    return joi.ValidationError(data, schema);
+    return joi.validate(data, schema);
 };
 const loginValidation = data => {
     const schema = {
         email: joi.string().email().required(),
         password: joi.string().min(8).required()
     };
-    return joi.ValidationError(data, schema);
+    return joi.validate(data, schema);
 };
 module.exports = { registerValidation, loginValidation }
