@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
   firstname: {
     type: String,
-    required: true,
+    required: true
   },
   lastname: {
     type: String,
@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
   verified: {
     type: Boolean,
     default: false
-  }
+  },
 }, { timestamps: true });
 
 const User = mongoose.model("user", userSchema);
