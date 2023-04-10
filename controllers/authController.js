@@ -42,7 +42,7 @@ const handleSignup = async (req, res) => {
     res.status(201).send({ message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!" });
 
   } catch (error) {
-    console.log("==================>",error);
+    console.log(error);
     return res.status(500).send({ message: "EMAIL NOT SENT!" });
   }
   /* try {
