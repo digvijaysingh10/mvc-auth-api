@@ -1,13 +1,13 @@
 const User = require("../models/userModel");
 const Token = require("../models/tokenModel");
-const sendMail = require("../middleware/sendEmail")
+const { sendMail } = require("../middleware/sendEmail");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const { registerValidation, loginValidation } = require("../middleware/validation");
-const sendEmail = require("../middleware/sendEmail");
-
-
+const {
+  registerValidation,
+  loginValidation,
+} = require("../middleware/validation");
 
 const handleSignup = async (req, res) => {
   try {
@@ -24,33 +24,31 @@ const handleSignup = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-    await new User({
+    const user = await new User({
       firstname: req.body.firstname,
       lastname: req.body.lastname,
       email: req.body.email,
       password: hashedPassword,
     }).save();
 
-  /*   const token = await new Token({
+    const token = await new Token({
       userId: user._id,
       token: crypto.randomBytes(32).toString("hex"),
     }).save();
 
-   const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`; */
+    const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
 
-    await sendEmail.sendMail(req.body.email);
-    res.status(201).send({ message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!" });
+    await sendMail(req.body.email, "verification link", url);
 
+    res
+      .status(201)
+      .send({
+        message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!",
+      });
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: "EMAIL NOT SENT!" });
   }
-  /* try {
-    const saveUser = await user.save();
-    res.send({ id: user._id });
-  } catch (error) {
-    res.status(400).send(error);
-  } */
 };
 
 const handleSignin = async (req, res) => {
@@ -67,26 +65,30 @@ const handleSignin = async (req, res) => {
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) {
     return res.status(404).send("INVALID PASSWORD!!!");
-  };
+  }
 
   if (!user.verified) {
     let token = await Token.findOne({ userId: user._id });
     if (!token) {
       token = await new Token({
         userId: user._id,
-        token: crypto.randomBytes(32).toString("hex")
+        token: crypto.randomBytes(32).toString("hex"),
       }).save();
 
       const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
 
-      await sendMail(req.body.email, "verifyEmail");
+      await sendMail(req.body.email, url);
 
-      res.status(201).send({ message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!" });
+      res
+        .status(201)
+        .send({
+          message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!",
+        });
     }
   }
+
   const token = jwt.sign({ _id: user._id }, "poiuytrewqmnbvcxz");
   res.header("auth-token", token).send(token);
-  // return res.send({ message: "LOGIN SUCCESSFUL!" })
 };
 
 const verifyToken = async (req, res) => {
@@ -94,30 +96,31 @@ const verifyToken = async (req, res) => {
     const user = await User.findOne({ _id: req.params.id });
     if (!user) {
       return res.status(400).send({
-        message: "INVALID LINK!!!"
+        message: "INVALID LINK!!!",
       });
     }
     const token = await Token.findOne({
       userId: user._id,
-      token: req.params.token
+      token: req.params.token,
     });
     if (!token) {
       return res.status(400).send({ message: "INVALID LINK!!!" });
     }
     await User.updateOne({
       _id: user._id,
-      verified: true
+      verified: true,
     });
-    await token.remove()
-    res.status(200).send({ message: "Email verified" })
+    await token.remove();
+    res.status(200).send({ message: "Email verified" });
   } catch (error) {
     res.status(500).send({
-      message: "SERVER ERROR!"
-    })
+      message: "SERVER ERROR!",
+    });
   }
 };
 
-
 module.exports = {
-  handleSignin, handleSignup, verifyToken
-}
+  handleSignin,
+  handleSignup,
+  verifyToken,
+};
