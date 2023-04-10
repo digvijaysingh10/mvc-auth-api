@@ -31,12 +31,12 @@ const handleSignup = async (req, res) => {
       password: hashedPassword,
     }).save();
 
-    const token = await new Token({
+  /*   const token = await new Token({
       userId: user._id,
       token: crypto.randomBytes(32).toString("hex"),
     }).save();
 
-   const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
+   const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`; */
 
     await sendEmail.sendMail(req.body.email);
     res.status(201).send({ message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!" });
