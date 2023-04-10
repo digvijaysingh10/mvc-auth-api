@@ -16,8 +16,7 @@ connectMongoDB("mongodb://localhost:27017/crud-test").then(() => {
   process.exit(1);
 });
 
-app.use("/api/users", userRouter);
-app.use("/users", authRouter);
+app.use("/users", userRouter, authRouter);
 
 app.listen(PORT, () => {
   console.log(`Server started at http://localhost:${PORT}/`);

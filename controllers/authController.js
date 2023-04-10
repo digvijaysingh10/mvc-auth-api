@@ -3,32 +3,33 @@ const Token = require("../models/tokenModel");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const nodemailer = require('nodemailer');
 const { registerValidation, loginValidation } = require("../middleware/validation");
 
 
-const sendMail = async (email, subject, text) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      service: "gmail",
-      port: 465,
-      secure: true,
-      auth: {
-        user: "singhdigvijay703@gmail.com",
-        pass: "jvqxoedbaklnjvcp",
-      },
-    });
-    await transporter.sendMail({
-      from: "singhdigvijay703@gmail.com",
-      to: email,
-      subject: subject,
-      text: text,
-    });
-    console.log("EMAIL SENT!");
-  } catch (error) {
-    console.log("EMAIL NOT SENT!");
-  }
-};
+// const sendMail = async (email, subject, text) => {
+//   try {
+//     const transporter = nodemailer.createTransport({
+//       host: "smtp.gmail.com",
+//       service: "gmail",
+//       port: 465,
+//       secure: true,
+//       auth: {
+//         user: "singhdigvijay703@gmail.com",
+//         pass: "jvqxoedbaklnjvcp",
+//       },
+//     });
+//     await transporter.sendMail({
+//       from: "singhdigvijay703@gmail.com",
+//       to: email,
+//       subject: subject,
+//       text: text,
+//     });
+//     console.log("EMAIL SENT!");
+//   } catch (error) {
+//     console.log("EMAIL NOT SENT!");
+//   }
+// };
 
 const handleSignup = async (req, res) => {
   const { error } = registerValidation(req, res);
@@ -55,20 +56,46 @@ const handleSignup = async (req, res) => {
     userId: user._id,
     token: crypto.randomBytes(32).toString("hex"),
   }).save();
-
+  // var nodemailer = require('nodemailer');
   const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
 
-  try {
-    await sendMail(req.body.email, url);
-    // res.status(201).send({ message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!" });
-  } catch (error) {
-    console.log("EMAIL NOT SENT!");
-    return res.status(500).send({ message: "EMAIL NOT SENT!" });
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'singhdigvijay703@gmail.com',
+    pass: 'jvqxoedbaklnjvcp'
   }
+});
+
+var mailOptions = {
+  from: 'singhdigvijay703@gmail.com',
+  to: req.body.email,
+  subject: 'Sending Email using Node.js',
+  text: `That was easy!${url}`
+};
+
+transporter.sendMail(mailOptions, function(error, info){
+  if (error) {
+    console.log(error);
+  } else {
+    console.log('Email sent: ' + info.response);
+  }
+});
+
+
+ 
+
+  // try {
+  //   await sendMail(req.body.email, url);
+  //   // res.status(201).send({ message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!" });
+  // } catch (error) {
+  //   console.log("EMAIL NOT SENT!");
+  //   return res.status(500).send({ message: "EMAIL NOT SENT!" });
+  // }
 
   try {
     const saveUser = await user.save();
-    res.send({ user: user._id });
+    res.send({ id: user._id });
   } catch (error) {
     res.status(400).send(error);
   }
@@ -105,7 +132,6 @@ const handleSignin = async (req, res) => {
       res.status(201).send({ message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!" });
     }
   }
-
   const token = jwt.sign({ _id: user._id }, "poiuytrewqmnbvcxz");
   res.header("auth-token", token).send(token);
   // return res.send({ message: "LOGIN SUCCESSFUL!" })
