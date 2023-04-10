@@ -1,5 +1,8 @@
 const User = require("../models/userModel");
+const Token = require("../models/tokenModel");
+const sendMail = require("../controllers/emailVerify");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const { registerValidation, loginValidation } = require("../middleware/validation");
 
@@ -16,6 +19,10 @@ const handleSignup = async (req, res) => {
 
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+    const token = await new Token({
+        
+    })
 
     const user = new User({
         firstname: req.body.firstname,
