@@ -1,11 +1,42 @@
 const User = require("../models/userModel");
 const Token = require("../models/tokenModel");
-const sendMail = require("../controllers/emailVerify");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const { registerValidation, loginValidation } = require("../middleware/validation");
 
+
+const sendMail = async (email, subject, text) => {
+  try {
+    nodemailer.createTestAccount((err, account) => {
+      if (err) {
+        console.error("FAILED TO CREATE TEST ACCOUNT" + err.message);
+        return process.exit(1);
+      }
+      console.log("CREDENTIALS OBTAIEND");
+    })
+    const transporter = nodemialer.createTransporrt({
+      host: account.smtp.host,
+      // service: 'gmail',
+      port: account.smtp.port,
+      secure: account.smtp.secure,
+      auth: {
+        user: account.user,
+        pass: account.pass
+      }
+    });
+    await transporter.sendMail({
+      from: account.user,
+      to: email,
+      subject: subject,
+      text: text
+    });
+    console.log("EMAIL SENT!");
+  } catch (error) {
+    console.log("EMAIL NOT SENT!");
+  }
+  console.log(error);
+};
 
 const handleSignup = async (req, res) => {
   const { error } = registerValidation(req, res);
@@ -18,15 +49,15 @@ const handleSignup = async (req, res) => {
     return res.status(400).send({ message: "EMAIL ALREADY EXISTS!!!" });
   }
 
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
   const user = new User({
     firstname: req.body.firstname,
     lastname: req.body.lastname,
     email: req.body.email,
     password: hashedPassword,
   });
-
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
   const token = await new Token({
     userId: user._id,
