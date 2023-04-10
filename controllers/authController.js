@@ -27,7 +27,7 @@ const handleSignup = async (req, res) => {
 
     const url = `http://localhost:300/users/${user._id}/verify/${token.token}`;
 
-    res.sratus(201).send({message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!"});
+    res.sratus(201).send({ message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!" });
 
     const user = new User({
         firstname: req.body.firstname,
@@ -57,7 +57,34 @@ const handleSignin = async (req, res) => {
     res.header("auth-token", token).send(token);
     // return res.send({ message: "LOGIN SUCCESSFUL!" })
 };
+const verifyToken = async (req, res) => {
+    try {
+        const user = await User.findOne({ _id: req.params.id });
+        if (!user) {
+            return res.status(400).send({
+                message: "INVAILD LINK!!!"
+            });
+            const token = await Token.findOne({
+                userId: user._id,
+                token: req.params.token
+            });
+            if (!token) {
+                res.status(400).send({ message: "INVALID LINK!!!" });
+            }
+            await User.updateOne({
+                _id: user._id,
+                verified: true
+            });
+            await token.remove()
+            res.status(200).send({ message: "Email verified" })
+        }
+    } catch (error) {
+        res.status(500).send({
+            message: "SERVER ERROR!"
+        })
+    }
+}
 
 module.exports = {
-    handleSignin, handleSignup
+    handleSignin, handleSignup, verifyToken
 }
