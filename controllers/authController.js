@@ -56,7 +56,7 @@ const handleSignup = async (req, res) => {
     userId: user._id,
     token: crypto.randomBytes(32).toString("hex"),
   }).save();
-  // var nodemailer = require('nodemailer');
+  
   const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
 
 var transporter = nodemailer.createTransport({
@@ -81,9 +81,6 @@ transporter.sendMail(mailOptions, function(error, info){
     console.log('Email sent: ' + info.response);
   }
 });
-
-
- 
 
   // try {
   //   await sendMail(req.body.email, url);
