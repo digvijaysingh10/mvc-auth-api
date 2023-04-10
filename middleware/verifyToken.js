@@ -6,7 +6,7 @@ const auth = (req, res, next) => {
         return res.status(401).send("ACCESS DENIED!!!");
     }
     try {
-        const verified = jwt.verify(token, process.env.TOKEN_SECRET);
+        const verified = jwt.verify(token, "poiuytrewqmnbvcxz");
         req.user = verified;
         next();
     } catch (error) {
