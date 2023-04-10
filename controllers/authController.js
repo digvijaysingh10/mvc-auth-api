@@ -44,7 +44,7 @@ const handleSignup = async (req, res) => {
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(req.body.password, salt);
-  
+
   const user = new User({
     firstname: req.body.firstname,
     lastname: req.body.lastname,
@@ -56,31 +56,34 @@ const handleSignup = async (req, res) => {
     userId: user._id,
     token: crypto.randomBytes(32).toString("hex"),
   }).save();
-  
+
   const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
 
-var transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'singhdigvijay703@gmail.com',
-    pass: 'jvqxoedbaklnjvcp'
-  }
-});
+  var transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: 'deepak.singh@indicchain.com',
+      pass: 'pkzzwckxjkpoesks'
+    }
 
-var mailOptions = {
-  from: 'singhdigvijay703@gmail.com',
-  to: req.body.email,
-  subject: 'Sending Email using Node.js',
-  text: `That was easy!${url}`
-};
+  });
 
-transporter.sendMail(mailOptions, function(error, info){
-  if (error) {
-    console.log(error);
-  } else {
-    console.log('Email sent: ' + info.response);
-  }
-});
+  var mailOptions = {
+    from: 'deepak.singh@indicchain.com',
+    to: req.body.email,
+    subject: 'Sending Email using Node.js',
+    text: `That was easy!${url}`
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
 
   // try {
   //   await sendMail(req.body.email, url);
