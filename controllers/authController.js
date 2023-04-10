@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const { registerValidation, loginValidation } = require("../middleware/validation");
+const sendEmail = require("../middleware/sendEmail");
 
 
 
@@ -29,17 +30,19 @@ const handleSignup = async (req, res) => {
       email: req.body.email,
       password: hashedPassword,
     }).save();
+
     const token = await new Token({
       userId: user._id,
       token: crypto.randomBytes(32).toString("hex"),
     }).save();
 
-    const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
-    await sendMail(req.body.email, url);
+   const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
+
+    await sendEmail.sendMail(req.body.email);
     res.status(201).send({ message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!" });
 
   } catch (error) {
-    console.log("EMAIL NOT SENT!");
+    console.log("==================>",error);
     return res.status(500).send({ message: "EMAIL NOT SENT!" });
   }
   /* try {
@@ -76,7 +79,7 @@ const handleSignin = async (req, res) => {
 
       const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
 
-      await sendMail(req.body.email, "verifyEmail", url);
+      await sendMail(req.body.email, "verifyEmail");
 
       res.status(201).send({ message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!" });
     }
