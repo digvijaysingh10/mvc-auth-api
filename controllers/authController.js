@@ -8,34 +8,26 @@ const { registerValidation, loginValidation } = require("../middleware/validatio
 
 const sendMail = async (email, subject, text) => {
   try {
-    nodemailer.createTestAccount((err, account) => {
-      if (err) {
-        console.error("FAILED TO CREATE TEST ACCOUNT" + err.message);
-        return process.exit(1);
-      }
-      console.log("CREDENTIALS OBTAIEND");
-    })
-    const transporter = nodemialer.createTransporrt({
-      host: account.smtp.host,
-      // service: 'gmail',
-      port: account.smtp.port,
-      secure: account.smtp.secure,
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      service: "gmail",
+      port: 465,
+      secure: true,
       auth: {
-        user: account.user,
-        pass: account.pass
-      }
+        user: "singhdigvijay703@gmail.com",
+        pass: "jvqxoedbaklnjvcp",
+      },
     });
     await transporter.sendMail({
-      from: account.user,
+      from: "singhdigvijay703@gmail.com",
       to: email,
       subject: subject,
-      text: text
+      text: text,
     });
     console.log("EMAIL SENT!");
   } catch (error) {
     console.log("EMAIL NOT SENT!");
   }
-  console.log(error);
 };
 
 const handleSignup = async (req, res) => {
@@ -51,7 +43,7 @@ const handleSignup = async (req, res) => {
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
+  
   const user = new User({
     firstname: req.body.firstname,
     lastname: req.body.lastname,
@@ -61,14 +53,18 @@ const handleSignup = async (req, res) => {
 
   const token = await new Token({
     userId: user._id,
-    token: crypto.randomBytes(32).toString("hex")
+    token: crypto.randomBytes(32).toString("hex"),
   }).save();
 
-  const url = `http://localhost:3000/users/${user._id}/verify/${token.token}`;
+  const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
 
-  sendMail(req.body.email, url);
-
-  res.status(201).send({ message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!" });
+  try {
+    await sendMail(req.body.email, url);
+    // res.status(201).send({ message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!" });
+  } catch (error) {
+    console.log("EMAIL NOT SENT!");
+    return res.status(500).send({ message: "EMAIL NOT SENT!" });
+  }
 
   try {
     const saveUser = await user.save();
@@ -101,7 +97,8 @@ const handleSignin = async (req, res) => {
         userId: user._id,
         token: crypto.randomBytes(32).toString("hex")
       }).save();
-      const url = `http://localhost:3000/users/${user._id}/verify/${token.token}`;
+
+      const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
 
       await sendMail(req.body.email, "verifyEmail", url);
 
@@ -141,7 +138,6 @@ const verifyToken = async (req, res) => {
     })
   }
 };
-
 
 
 module.exports = {
