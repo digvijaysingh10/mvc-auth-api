@@ -53,9 +53,9 @@ const handleSignin = async (req, res) => {
     if (!validPassword) {
         return res.status(404).send("INVALID PASSWORD!!!")
     }
-    // const token = jwt.sign({ _id: user._id }, poiuytrewqmnbvcxz);
-    // res.header("auth-token", token).send(token);
-    return res.send({ message: "LOGIN SUCCESSFUL!" })
+    const token = jwt.sign({ _id: user._id }, poiuytrewqmnbvcxz);
+    res.header("auth-token", token).send(token);
+    // return res.send({ message: "LOGIN SUCCESSFUL!" })
 };
 
 module.exports = {
