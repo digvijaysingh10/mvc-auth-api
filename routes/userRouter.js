@@ -6,12 +6,10 @@ const {
   handleGetUserById,
   handleUpdateUserById,
   handleDeleteUserById,
-  handleCreateNewUser,
 } = require("../controllers/userController");
 
 router.route("/")
   .get(handleGetAllUsers)
-  .post(handleCreateNewUser);
 
 router.route("/:id")
   .get(handleGetUserById)

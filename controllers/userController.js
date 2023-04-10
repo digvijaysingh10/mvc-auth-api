@@ -49,40 +49,9 @@ const handleDeleteUserById = async (req, res) => {
   }
 };
 
-const handleCreateNewUser = async (req, res) => {
-  try {
-    const body = req.body;
-    if (
-      !body ||
-      !body.firstname ||
-      !body.lastname ||
-      !body.email ||
-      !body.password
-    ) {
-      return res.status(400).json({
-        message: "All fields are required",
-      });
-    }
-    const result = await User.create({
-      firstname: body.firstname,
-      lastname: body.lastname,
-      email: body.email,
-      password: body.password,
-    });
-    return res.status(201).json({
-      message: "User created successfully",
-      id: result._id,
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "Server error" });
-  }
-};
-
 module.exports = {
   handleGetAllUsers,
   handleGetUserById,
   handleUpdateUserById,
   handleDeleteUserById,
-  handleCreateNewUser,
 };
