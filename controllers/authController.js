@@ -40,11 +40,9 @@ const handleSignup = async (req, res) => {
 
     await sendMail(req.body.email, "verification link", url);
 
-    res
-      .status(201)
-      .send({
-        message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!",
-      });
+    res.status(201).send({
+      message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!",
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: "EMAIL NOT SENT!" });
@@ -77,13 +75,11 @@ const handleSignin = async (req, res) => {
 
       const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
 
-      await sendMail(req.body.email, url);
+      await sendMail(req.body.email, "verification link", url);
 
-      res
-        .status(201)
-        .send({
-          message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!",
-        });
+      res.status(201).send({
+        message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!",
+      });
     }
   }
 
