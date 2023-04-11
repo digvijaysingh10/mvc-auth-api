@@ -9,6 +9,9 @@ const {
   loginValidation,
 } = require("../middleware/validation");
 
+
+//sign up controller 
+
 const handleSignup = async (req, res) => {
   try {
     const { error } = registerValidation(req, res);
@@ -31,12 +34,12 @@ const handleSignup = async (req, res) => {
       password: hashedPassword,
     }).save();
 
-    const token = await new Token({
+    const verificationToken = await new Token({
       userId: user._id,
       token: crypto.randomBytes(32).toString("hex"),
     }).save();
 
-    const url = `http://localhost:8080/users/${user._id}/verify/${token.token}`;
+    const url = `http://localhost:8080/users/${user._id}/verify/${verificationToken.token}`;
 
     await sendMail(req.body.email, "verification link", url);
 
@@ -49,56 +52,29 @@ const handleSignup = async (req, res) => {
   }
 };
 
+//verify token 
+
 const verifyToken = async (req, res) => {
   const { id, token } = req.params;
 
-  // Find the user in the database
-  const user = await User.findById(id);
 
-  // If the user is not found or the verification token doesn't match, return an error
-  if (!user || user.token !== token) {
+  const verificationToken = await Token.findOne({ userId: id, token });
+
+  if (!verificationToken) {
     return res.status(400).json({ error: 'Invalid verification link' });
   }
 
-  // Update the user's isVerified field and clear the verification token
+
+  const user = await User.findById(id);
   user.verified = true;
-  user.token = null;
-
-  // Save the updated user to the database
   await user.save();
+  await verificationToken.deleteOne();
 
-  // Return a success message to the client
   return res.status(200).json({ message: 'Email address verified successfully' });
 };
 
-/* 
-const verifyToken = async (req, res) => {
-  try {
-    const user = await User.findOne({ _id: req.params.id });
-    if (!user) {
-      return res.status(400).send({
-        message: "INVALID LINK!!!",
-      });
-    }
-    const token = await Token.findOne({
-      userId: user._id,
-      token: req.params.token,
-    });
-    if (!token) {
-      return res.status(400).send({ message: "INVALID LINK!!!" });
-    }
-    await User.updateOne({
-      _id: user._id,
-      verified: true,
-    });
-    await token.remove();
-    res.status(200).send({ message: "Email verified" });
-  } catch (error) {
-    res.status(500).send({
-      message: "SERVER ERROR!",
-    });
-  }
-}; */
+
+//sign in
 
 const handleSignin = async (req, res) => {
   const { error } = loginValidation(req, res);
