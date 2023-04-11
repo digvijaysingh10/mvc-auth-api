@@ -6,7 +6,7 @@ const { sendResetLink, verifyResetToken, updatePassword } = require("../controll
 router.route("/reset").post(sendResetLink);
 
 // Verify reset token
-router.route("/:id/verify/:token").get(verifyResetToken);
+router.route("/:id/reset/:token").get(verifyResetToken);
 
 // Update password
 router.route("/:id/update/:token").put(updatePassword);
