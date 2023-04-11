@@ -7,7 +7,7 @@ This is a secure and reliable user authentication and management system built wi
 It provides seamless functionality for login, sign up, verification, password reset, and recovery.
 With this system, you can rest assured that your users' information is safe and secure.
 
-Getting Started
+## Getting Started
 To get started with this system, follow these simple steps:
 
 Clone the repository to your local machine:
