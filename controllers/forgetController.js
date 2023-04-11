@@ -60,7 +60,7 @@ const updatePassword = async (req, res) => {
 
     const user = await User.findByIdAndUpdate(id, {
       password: hashedPassword,
-    }).save();
+    });
     await resetToken.deleteOne();
 
     res.status(200).send({ message: "PASSWORD UPDATED SUCCESSFULLY!!!" });
