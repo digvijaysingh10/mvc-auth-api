@@ -9,8 +9,7 @@ const {
   loginValidation,
 } = require("../middleware/validation");
 
-
-//sign up controller 
+//sign up controller
 
 const handleSignup = async (req, res) => {
   try {
@@ -52,7 +51,7 @@ const handleSignup = async (req, res) => {
   }
 };
 
-//verify token 
+//verify token
 
 /* const verifyToken = async (req, res) => {
   const { id, token } = req.params;
@@ -77,7 +76,7 @@ const verifyToken = async (req, res) => {
   const verificationToken = await Token.findOne({ userId: id, token });
 
   if (!verificationToken) {
-    return res.status(400).json({ error: 'INVALID VERIFICATION LINK!!!' });
+    return res.status(400).json({ error: "INVALID VERIFICATION LINK!!!" });
   }
 
   const user = await User.findById(id);
@@ -85,27 +84,14 @@ const verifyToken = async (req, res) => {
   await user.save();
   await verificationToken.deleteOne();
 
-  return res.send('<h1>Account verified successfully!</h1><script>window.setTimeout(() => { window.location.href = "http://localhost:3000/signin"; }, 3000);</script>');
+  return res.send(
+    `<h1>Account verified successfully!</h1>
+    <script>
+    window.setTimeout(() => 
+    { window.location.href = "http://localhost:3000/signin"; }, 3000);
+    </script>`
+  );
 };
-
-
-/* const verifyToken = async (req, res) => {
-  const { id, token } = req.params;
-
-  const verificationToken = await Token.findOne({ userId: id, token });
-
-  if (!verificationToken) {
-    return res.status(400).json({ error: 'INVALID VERIFICATION LINK!!!' });
-  }
-
-  const user = await User.findById(id);
-  user.verified = true;
-  await user.save();
-  await verificationToken.deleteOne();
-
-  return res.redirect('http://localhost:3000/signin');
-}; */
-
 
 //sign in
 
@@ -132,7 +118,6 @@ const handleSignin = async (req, res) => {
   const token = jwt.sign({ _id: user._id }, "poiuytrewqmnbvcxz");
   res.header("auth-token", token).send(token);
 };
-
 
 module.exports = {
   handleSignin,
