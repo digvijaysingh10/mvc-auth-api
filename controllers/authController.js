@@ -49,6 +49,34 @@ const handleSignup = async (req, res) => {
   }
 };
 
+const verifyToken = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    if (!user) {
+      return res.status(400).send({
+        message: "INVALID LINK!!!",
+      });
+    }
+    const token = await Token.findOne({
+      userId: user._id,
+      token: req.params.token,
+    });
+    if (!token) {
+      return res.status(400).send({ message: "INVALID LINK!!!" });
+    }
+    await User.updateOne({
+      _id: user._id,
+      verified: true,
+    });
+    await token.remove();
+    res.status(200).send({ message: "Email verified" });
+  } catch (error) {
+    res.status(500).send({
+      message: "SERVER ERROR!",
+    });
+  }
+};
+
 const handleSignin = async (req, res) => {
   const { error } = loginValidation(req, res);
   if (error) {
@@ -87,33 +115,7 @@ const handleSignin = async (req, res) => {
   res.header("auth-token", token).send(token);
 };
 
-const verifyToken = async (req, res) => {
-  try {
-    const user = await User.findOne({ _id: req.params.id });
-    if (!user) {
-      return res.status(400).send({
-        message: "INVALID LINK!!!",
-      });
-    }
-    const token = await Token.findOne({
-      userId: user._id,
-      token: req.params.token,
-    });
-    if (!token) {
-      return res.status(400).send({ message: "INVALID LINK!!!" });
-    }
-    await User.updateOne({
-      _id: user._id,
-      verified: true,
-    });
-    await token.remove();
-    res.status(200).send({ message: "Email verified" });
-  } catch (error) {
-    res.status(500).send({
-      message: "SERVER ERROR!",
-    });
-  }
-};
+
 
 module.exports = {
   handleSignin,
