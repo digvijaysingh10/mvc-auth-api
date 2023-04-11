@@ -47,3 +47,5 @@ const resetPassword = async (req, res) => {
     return res.status(500).send({ message: "SERVER ERROR!" });
   }
 };
+
+module.exports = resetPassword;
