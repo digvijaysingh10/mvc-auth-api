@@ -33,57 +33,57 @@ npm start
 # Usage
 This system offers the following endpoints:
 
-Sign Up
+Sign Up <br />
 Endpoint: POST /api/auth/signup
 
-Request Body:
+Request Body:<br />
 {
-  "name": "John Doe",
-  "email": "johndoe@example.com",
+  "name": "Alpha Charlie",
+  "email": "abc@example.com",
   "password": "password123"
 }
-Response Body:
+Response Body:<br />
 {
   "message": "User created successfully"
 }
-Login
+Login<br />
 Endpoint: POST /api/auth/login
 
-Request Body:
+Request Body:<br />
 {
   "email": "abc@example.com",
   "password": "password123"
 }
-Response Body:
+Response Body:<br />
 {
   "token": "[JWT TOKEN]"
 }
 # Verify Account
 Endpoint: POST /api/auth/verify/:token
 
-Request Parameter:
+Request Parameter:<br />
 token=[TOKEN]
-Response Body:
+Response Body:<br />
 {
   "message": "Account verified successfully"
 }
-Forgot Password
+Forgot Password<br />
 Endpoint: POST /api/auth/forgot-password
 
-Request Body:
+Request Body:<br />
 {
   "email": "abc@example.com"
 }
-Response Body:
+Response Body:<br />
 {
   "message": "Password reset email sent successfully"
 }
 
-Reset Password
+Reset Password<br />
 
 Endpoint: POST /api/auth/reset-password/:token
 
-Request Parameter:
+Request Parameter:<br />
 
 token=[TOKEN]
 
@@ -93,7 +93,7 @@ Request Body:
   "password": "newpassword123"
 }
 
-Response Body:
+Response Body:<br />
 {
   "message": "Password reset successfully"
 }
