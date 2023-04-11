@@ -18,7 +18,7 @@ git clone https://github.com/VALIANTGUARDIAN/mvc-api.git
 # Install the dependencies:
 npm install
 
-Set up the environment variables:
+# Set up the environment variables:
 
 Create a .env file and add the following variables:
 
@@ -26,11 +26,11 @@ PORT=[PORT NUMBER]
 MONGODB_URI=[MONGODB URI]
 JWT_SECRET=[JWT SECRET]
 
-Start the server:
+# Start the server:
 
 npm start
 
-Usage
+# Usage
 This system offers the following endpoints:
 
 Sign Up
@@ -98,11 +98,11 @@ Response Body:
   "message": "Password reset successfully"
 }
 
-Security
+# Security
 
 This system uses JWT for authentication and bcrypt for password hashing. 
 It also has rate limiting and CSRF protection to prevent common attacks such as brute force and cross-site request forgery.
 
 
-Contributing
+# Contributing
 Contributions are welcome! To contribute, fork the repository and create a pull request. Please make sure to write tests and follow the code style.
