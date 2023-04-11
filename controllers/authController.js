@@ -41,7 +41,7 @@ const handleSignup = async (req, res) => {
 
     const url = `http://localhost:8080/users/${user._id}/verify/${verificationToken.token}`;
 
-    await sendMail(req.body.email, "verification link", url);
+    await sendMail(req.body.email, "VERIFY TO REGISTER!", url);
 
     res.status(201).send({
       message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!",
@@ -61,7 +61,7 @@ const verifyToken = async (req, res) => {
   const verificationToken = await Token.findOne({ userId: id, token });
 
   if (!verificationToken) {
-    return res.status(400).json({ error: 'Invalid verification link' });
+    return res.status(400).json({ error: 'INVALID VERIFICATION LINK!!!' });
   }
 
 
@@ -70,7 +70,7 @@ const verifyToken = async (req, res) => {
   await user.save();
   await verificationToken.deleteOne();
 
-  return res.status(200).json({ message: 'Email address verified successfully' });
+  return res.status(200).json({ message: 'EMAIL VERIFIED SUCCESSFULLY!!!' });
 };
 
 
@@ -93,55 +93,12 @@ const handleSignin = async (req, res) => {
   }
 
   if (!user.verified) {
-    return res.status(404).send({ message: "user not verified" });
-  }
-
-  const token = jwt.sign({ _id: user._id }, "poiuytrewqmnbvcxz");
-  res.header("auth-token", token).send(token);
-}
-
-
-
-
-
-/* const handleSignin = async (req, res) => {
-  const { error } = loginValidation(req, res);
-  if (error) {
-    return res.status(400).send(error.details[0].message);
-  }
-
-  const user = await User.findOne({ email: req.body.email });
-  if (!user) {
-    return res.status(400).send({ message: "EMAIL DOES NOT EXIST!!!" });
-  }
-
-  const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (!validPassword) {
-    return res.status(404).send("INVALID PASSWORD!!!");
-  }
-
-  if (!user.verified) {
-    let token = await Token.findOne({ userId: user._id });
-    if (!token) {
-      token = await new Token({
-        userId: user._id,
-        token: crypto.randomBytes(32).toString("hex"),
-      }).save();
-
-      const url = `http://localhost:8080/users/${user._id}/verify/${token.token}`;
-
-      await sendMail(req.body.email, "verification link", url);
-
-      res.status(201).send({
-        message: "EMAIL SENT TO YOUR ACCOUNT, PLEASE VERIFY TO REGISTER!",
-      });
-    }
+    return res.status(404).send({ message: "USER NOT VERIFIED!!!" });
   }
 
   const token = jwt.sign({ _id: user._id }, "poiuytrewqmnbvcxz");
   res.header("auth-token", token).send(token);
 };
- */
 
 
 module.exports = {
