@@ -3,26 +3,28 @@ const Token = require("../models/tokenModel");
 const { sendMail } = require("../middleware/sendEmail");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
 const { loginValidation } = require("../middleware/validation");
 
-const forgetPassword = async (req, res) => {
+const sendResetLink = async (req, res) => {
     try {
         const { error } = loginValidation(req, res);
         if (error) {
             return res.status(400).send(error.details[0].message);
         };
 
-        const emailExist = await User.findOne({ email: req.body.email });
-        if (!emailExist) {
-            return res.status(409).send({ message: "EMAIL DON'T EXISTS!!!" });
+        const user = await User.findOne({ email: req.body.email });
+        if (!user) {
+            return res.status(409).send({ message: "EMAIL DOESN'T EXIST!!!" });
         }
+
         const resetToken = await new Token({
-            userId: userInfo._id,
+            userId: user._id,
             token: crypto.randomBytes(32).toString("hex"),
         }).save();
+        
         const url = `http://localhost:8080/users/${user._id}/verify/${resetToken.token}`;
         await sendMail(req.body.email, "RESET LINK", url);
+        
         res.status(201).send({ message: "RESET LINK SENT" });
     } catch (error) {
         console.log(error);
@@ -30,27 +32,47 @@ const forgetPassword = async (req, res) => {
     }
 };
 
-const changePassword = async (req, res) => {
-    const { id, token } = req.params;
-    const resetToken = await Token.findOne({ userId: id, token });
-    if (!resetToken) {
-        return res.status(400).send({ error: "INVALID LINK!!!" });
+const verifyResetToken = async (req, res) => {
+    try {
+        const { id, token } = req.params;
+        const resetToken = await Token.findOne({ userId: id, token });
+        if (!resetToken) {
+            return res.status(400).send({ error: "INVALID LINK!!!" });
+        }
+        
+        return res.status(200).send({message: "LINK VERIFIED SUCCESSFULLY!!!"});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ message: "SERVER ERROR!!!" });
     }
+};
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+const updatePassword = async (req, res) => {
+    try {
+        const { id, token } = req.params;
+        const resetToken = await Token.findOne({ userId: user._id, token });
+        if (!resetToken) {
+            return res.status(400).send({ error: "INVALID LINK!!!" });
+        }
 
-    const user = await User.findByIdAndUpdate(id);
-    user.password = hashedPassword,
-    await user.save();
-    await resetToken.deleteOne();
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(req.body.password, salt);
 
-    return res.status(200).send({message:"PASSWORD CHANGED SUCCESSFULLY!!!"})
-
-}
+        const user = await User.findByIdAndUpdate(user._id);
+        user.password = hashedPassword,
+        await user.save();
+        
+        await resetToken.deleteOne();
+        
+        return res.status(200).send({message:"PASSWORD CHANGED SUCCESSFULLY!!!"})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ message: "SERVER ERROR!!!" });
+    }
+};
 
 module.exports = {
-    forgetPassword,
-    changePassword
-  };
-  
+    sendResetLink,
+    verifyResetToken,
+    updatePassword
+};
