@@ -48,3 +48,9 @@ const changePassword = async (req, res) => {
     return res.status(200).send({message:"PASSWORD CHANGED SUCCESSFULLY!!!"})
 
 }
+
+module.exports = {
+    forgetPassword,
+    changePassword
+  };
+  
