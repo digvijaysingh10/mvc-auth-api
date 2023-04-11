@@ -7,7 +7,7 @@ const {
 
 router.route("/signup").post(handleSignup);
 
-router.route("/:id/verify/:token", verifyToken);
+router.route("/:id/verify/:token").get(verifyToken);
 
 router.route("/signin").post(handleSignin);
 /* 

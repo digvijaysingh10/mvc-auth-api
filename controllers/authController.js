@@ -50,6 +50,29 @@ const handleSignup = async (req, res) => {
 };
 
 const verifyToken = async (req, res) => {
+  const { id, token } = req.params;
+
+  // Find the user in the database
+  const user = await User.findById(id);
+
+  // If the user is not found or the verification token doesn't match, return an error
+  if (!user || user.token !== token) {
+    return res.status(400).json({ error: 'Invalid verification link' });
+  }
+
+  // Update the user's isVerified field and clear the verification token
+  user.verified = true;
+  user.token = null;
+
+  // Save the updated user to the database
+  await user.save();
+
+  // Return a success message to the client
+  return res.status(200).json({ message: 'Email address verified successfully' });
+};
+
+/* 
+const verifyToken = async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.id });
     if (!user) {
@@ -75,7 +98,7 @@ const verifyToken = async (req, res) => {
       message: "SERVER ERROR!",
     });
   }
-};
+}; */
 
 const handleSignin = async (req, res) => {
   const { error } = loginValidation(req, res);
