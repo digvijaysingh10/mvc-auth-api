@@ -19,7 +19,7 @@ const forgetPassword = async (req, res) => {
         }
         const resetToken = await new Token({
             userId: userInfo._id,
-            token: cryto.randomBytes(32).toString("hex"),
+            token: crypto.randomBytes(32).toString("hex"),
         }).save();
         const url = `http://localhost:8080/users/${user._id}/verify/${resetToken.token}`;
         await sendMail(req.body.email, "RESET LINK", url);
