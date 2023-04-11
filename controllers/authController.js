@@ -36,7 +36,7 @@ const handleSignup = async (req, res) => {
       token: crypto.randomBytes(32).toString("hex"),
     }).save();
 
-    const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
+    const url = `http://localhost:8080/users/${user._id}/verify/${token.token}`;
 
     await sendMail(req.body.email, "verification link", url);
 
@@ -73,7 +73,7 @@ const handleSignin = async (req, res) => {
         token: crypto.randomBytes(32).toString("hex"),
       }).save();
 
-      const url = `http://localhost:6000/users/${user._id}/verify/${token.token}`;
+      const url = `http://localhost:8080/users/${user._id}/verify/${token.token}`;
 
       await sendMail(req.body.email, "verification link", url);
 
