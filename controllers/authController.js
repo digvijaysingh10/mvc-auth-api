@@ -93,6 +93,34 @@ const handleSignin = async (req, res) => {
   }
 
   if (!user.verified) {
+    return res.status(404).send({ message: "user not verified" });
+  }
+
+  const token = jwt.sign({ _id: user._id }, "poiuytrewqmnbvcxz");
+  res.header("auth-token", token).send(token);
+}
+
+
+
+
+
+/* const handleSignin = async (req, res) => {
+  const { error } = loginValidation(req, res);
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return res.status(400).send({ message: "EMAIL DOES NOT EXIST!!!" });
+  }
+
+  const validPassword = await bcrypt.compare(req.body.password, user.password);
+  if (!validPassword) {
+    return res.status(404).send("INVALID PASSWORD!!!");
+  }
+
+  if (!user.verified) {
     let token = await Token.findOne({ userId: user._id });
     if (!token) {
       token = await new Token({
@@ -113,7 +141,7 @@ const handleSignin = async (req, res) => {
   const token = jwt.sign({ _id: user._id }, "poiuytrewqmnbvcxz");
   res.header("auth-token", token).send(token);
 };
-
+ */
 
 
 module.exports = {
