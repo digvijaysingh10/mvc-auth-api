@@ -57,13 +57,11 @@ const handleSignup = async (req, res) => {
 const verifyToken = async (req, res) => {
   const { id, token } = req.params;
 
-
   const verificationToken = await Token.findOne({ userId: id, token });
 
   if (!verificationToken) {
     return res.status(400).json({ error: 'INVALID VERIFICATION LINK!!!' });
   }
-
 
   const user = await User.findById(id);
   user.verified = true;
@@ -72,6 +70,23 @@ const verifyToken = async (req, res) => {
 
   return res.status(200).json({ message: 'EMAIL VERIFIED SUCCESSFULLY!!!' });
 };
+
+/* const verifyToken = async (req, res) => {
+  const { id, token } = req.params;
+
+  const verificationToken = await Token.findOne({ userId: id, token });
+
+  if (!verificationToken) {
+    return res.status(400).json({ error: 'INVALID VERIFICATION LINK!!!' });
+  }
+
+  const user = await User.findById(id);
+  user.verified = true;
+  await user.save();
+  await verificationToken.deleteOne();
+
+  return res.redirect('http://localhost:3000/signin');
+}; */
 
 
 //sign in
