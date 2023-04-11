@@ -85,8 +85,26 @@ const verifyToken = async (req, res) => {
   await user.save();
   await verificationToken.deleteOne();
 
-  return res.redirect('http://localhost:3000/signin');
+  return res.send('<h1>Account verified successfully!</h1><script>window.setTimeout(() => { window.location.href = "http://localhost:3000/signin"; }, 3000);</script>');
 };
+
+
+/* const verifyToken = async (req, res) => {
+  const { id, token } = req.params;
+
+  const verificationToken = await Token.findOne({ userId: id, token });
+
+  if (!verificationToken) {
+    return res.status(400).json({ error: 'INVALID VERIFICATION LINK!!!' });
+  }
+
+  const user = await User.findById(id);
+  user.verified = true;
+  await user.save();
+  await verificationToken.deleteOne();
+
+  return res.redirect('http://localhost:3000/signin');
+}; */
 
 
 //sign in
