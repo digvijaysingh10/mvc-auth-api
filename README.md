@@ -12,10 +12,10 @@ To get started with this system, follow these simple steps:
 
 Clone the repository to your local machine:
 
-git clone https://github.com/[USERNAME]/[REPOSITORY].git
+git clone https://github.com/VALIANTGUARDIAN/mvc-api.git
 
 
-Install the dependencies:
+# Install the dependencies:
 npm install
 
 Set up the environment variables:
