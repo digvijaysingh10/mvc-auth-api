@@ -40,7 +40,12 @@ const verifyResetToken = async (req, res) => {
       return res.status(404).send({ message: "INVALID LINK!!!" });
     }
 
-    res.status(200).send({ message: "LINK VERIFIED SUCCESSFULLY!!!" });
+    return res.send(
+      `<h1>Link verified successfully!</h1>
+      <script>
+      window.setTimeout(() => 
+      { window.location.href = "http://localhost:3000/reset"; }, 3000);
+      </script>`);
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: "SERVER ERROR!!!" });
