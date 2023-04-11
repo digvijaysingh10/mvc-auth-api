@@ -36,64 +36,64 @@ This system offers the following endpoints:
 Sign Up <br />
 Endpoint: POST /api/auth/signup
 
-Request Body:<br />
+<br />Request Body:<br />
 {
   "name": "Alpha Charlie",
   "email": "abc@example.com",
   "password": "password123"
 }
-Response Body:<br />
+<br />Response Body:<br />
 {
   "message": "User created successfully"
 }
-Login<br />
+<br />Login<br />
 Endpoint: POST /api/auth/login
 
-Request Body:<br />
+<br />Request Body:<br />
 {
   "email": "abc@example.com",
   "password": "password123"
 }
-Response Body:<br />
+<br />Response Body:<br />
 {
   "token": "[JWT TOKEN]"
 }
 # Verify Account
 Endpoint: POST /api/auth/verify/:token
 
-Request Parameter:<br />
+<br />Request Parameter:<br />
 token=[TOKEN]
-Response Body:<br />
+<br />Response Body:<br />
 {
   "message": "Account verified successfully"
 }
-Forgot Password<br />
+<br />Forgot Password<br />
 Endpoint: POST /api/auth/forgot-password
 
-Request Body:<br />
+<br />Request Body:<br />
 {
   "email": "abc@example.com"
 }
-Response Body:<br />
+<br />Response Body:<br />
 {
   "message": "Password reset email sent successfully"
 }
 
-Reset Password<br />
+<br />Reset Password<br />
 
 Endpoint: POST /api/auth/reset-password/:token
 
-Request Parameter:<br />
+<br />Request Parameter:<br />
 
 token=[TOKEN]
 
-Request Body:
+<br />Request Body:
 
 {
   "password": "newpassword123"
 }
 
-Response Body:<br />
+<br />Response Body:<br />
 {
   "message": "Password reset successfully"
 }
