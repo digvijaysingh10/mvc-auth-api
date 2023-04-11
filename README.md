@@ -26,7 +26,7 @@ PORT=[PORT NUMBER]
 MONGODB_URI=[MONGODB URI]
 JWT_SECRET=[JWT SECRET]
 
-# Start the server:
+## Start the server:
 
 npm start
 
@@ -58,7 +58,7 @@ Response Body:
 {
   "token": "[JWT TOKEN]"
 }
-Verify Account
+# Verify Account
 Endpoint: POST /api/auth/verify/:token
 
 Request Parameter:
