@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const { loginValidation } = require("../middleware/validation");
 const jwt = require("jsonwebtoken");
 
-const resetPassword = async (req, res) => {
+const changePassword = async (req, res) => {
   try {
     const token = req.header("auth-token");
     if (!token) {
@@ -48,4 +48,4 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = resetPassword;
+module.exports = changePassword;
