@@ -44,7 +44,7 @@ const verifyResetToken = async (req, res) => {
       `<h1>Link verified successfully!</h1>
       <script>
       window.setTimeout(() => 
-      { window.location.href = "http://localhost:3000/reset"; }, 3000);
+      { window.location.href = "http://localhost:3000/reset/users/${id}/reset/${token}"; }, 3000);
       </script>`);
   } catch (error) {
     console.log(error);
