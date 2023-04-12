@@ -10,6 +10,6 @@ router.route("/reset").post(sendResetLink);
 router.route("/:id/reset/:token").get(verifyResetToken).put(updatePassword);
 
 
-router.route("/resetpassword").put(changePassword)
+router.route("/changepassword").put(changePassword)
 
 module.exports = router;
