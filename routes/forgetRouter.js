@@ -7,10 +7,8 @@ const resetPassword = require("../controllers/resetPasswordController");
 router.route("/reset").post(sendResetLink);
 
 
-router.route("/:id/reset/:token").get(verifyResetToken);
+router.route("/:id/reset/:token").get(verifyResetToken).put(updatePassword);
 
-
-router.route("/:id/update/:token").put(updatePassword);
 
 router.route("/resetpassword").put(resetPassword)
 
