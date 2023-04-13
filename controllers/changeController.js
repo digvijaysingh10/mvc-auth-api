@@ -44,6 +44,3 @@ const changePassword = async (req, res) => {
 };
 
 module.exports = changePassword;
-
-
-module.exports = changePassword;
