@@ -121,7 +121,7 @@ const authenticate = async (req, res, next) => {
     }
     req.user = user;
     next();
-    
+
   } catch (error) {
     console.log(error);
     return res.status(500).send({ message: "SERVER ERROR!" });
@@ -140,7 +140,8 @@ const changePassword = async (req, res) => {
       return res.status(401).send({ message: "OLD PASSWORD DIDN'T MATCHED!" });
     } else {
       const newpass = await bcrypt.hashSync(req.body.password, 10);
-      const data = await User.findOneAndUpdate({ _id: req.user._id }, { $set: { password: newpass } })
+      const data = await User.findOneAndUpdate({ _id: req.user._id },
+        { $set: { password: newpass } })
       res.send(data)
     }
 
