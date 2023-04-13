@@ -124,9 +124,13 @@ const authenticate = async (req, res, next) => {
 
   } catch (error) {
     console.log(error);
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(401).send({ message: "INVALID TOKEN! PLEASE LOGIN AGAIN!" });
+    }
     return res.status(500).send({ message: "SERVER ERROR!" });
   }
 };
+
 
 const changePassword = async (req, res) => {
   try {
@@ -139,7 +143,9 @@ const changePassword = async (req, res) => {
     if (!oldPasswordMatched) {
       return res.status(401).send({ message: "OLD PASSWORD DIDN'T MATCHED!" });
     } else {
-      const newpass = await bcrypt.hashSync(req.body.password, 10);
+
+      const salt = await bcrypt.genSalt(10);
+      const newpass = await bcrypt.hash(req.body.password, salt);
       const data = await User.findOneAndUpdate({ _id: req.user._id },
         { $set: { password: newpass } })
       res.send(data)
