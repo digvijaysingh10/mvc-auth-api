@@ -3,7 +3,7 @@ const Token = require("../models/tokenModel");
 const { sendMail } = require("../middleware/sendEmail");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-const { loginValidation } = require("../middleware/validation");
+const { loginValidation } = require("../validations/authValidation");
 
 const sendResetLink = async (req, res) => {
   try {

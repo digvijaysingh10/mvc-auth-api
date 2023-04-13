@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const { User } = require("../models/User");
-const { loginValidation } = require("../validation/auth");
-const { auth } = require("../middleware/auth");
+const bcrypt = require("bcrypt");
+const { User } = require("../models/userModel");
+const { loginValidation } = require("../validations/authValidation");
+const { auth } = require("../middleware/verifyToken");
 
 const handleChangePassword = async (req, res) => {
   try {

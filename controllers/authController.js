@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const {
   registerValidation,
   loginValidation,
-} = require("../middleware/validation");
+} = require("../validations/authValidation");
 
 //sign up controller
 
