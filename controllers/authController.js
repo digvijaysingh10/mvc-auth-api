@@ -77,7 +77,6 @@ const verifyToken = async (req, res) => {
 };
 
 //sign in
-
 const handleSignin = async (req, res) => {
   const { error } = loginValidation(req, res);
   if (error) {
@@ -102,7 +101,7 @@ const handleSignin = async (req, res) => {
   res.header("auth-token", token).send(token);
 };
 
-const changePassword = async (req, res) => {
+const authenticate = async (req, res, next) => {
   try {
     const token = req.header("auth-token");
     if (!token) {
@@ -120,18 +119,28 @@ const changePassword = async (req, res) => {
     if (!user.verified) {
       return res.status(400).send({ message: "USER NOT VERIFIED! PLEASE VERIFY YOUR ACCOUNT FIRST!" });
     }
+    req.user = user;
+    next();
+    
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ message: "SERVER ERROR!" });
+  }
+};
 
+const changePassword = async (req, res) => {
+  try {
     const { error } = loginValidation(req, res);
     if (error) {
       return res.status(400).send({ message: error.details[0].message });
     }
 
-    const oldPasswordMatched = await bcrypt.compare(req.body.oldPassword, user.password);
+    const oldPasswordMatched = await bcrypt.compare(req.body.oldPassword, req.user.password);
     if (!oldPasswordMatched) {
       return res.status(401).send({ message: "OLD PASSWORD DIDN'T MATCHED!" });
     } else {
       const newpass = await bcrypt.hashSync(req.body.password, 10);
-      const data = await User.findOneAndUpdate({ _id: userId }, { $set: { password: newpass } })
+      const data = await User.findOneAndUpdate({ _id: req.user._id }, { $set: { password: newpass } })
       res.send(data)
     }
 
@@ -141,9 +150,11 @@ const changePassword = async (req, res) => {
   }
 };
 
+
 module.exports = {
   handleSignin,
   handleSignup,
   verifyToken,
+  authenticate,
   changePassword
 };
