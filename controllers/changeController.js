@@ -2,18 +2,22 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const { loginValidation } = require("../middleware/validation");
 const jwt = require("jsonwebtoken");
+const authController = require("../controllers/authController")
+
 
 const changePassword = async (req, res) => {
   try {
-    // const token =await req.header("auth-token");
-    // console.log(token)
-    // if (!token) {
-    //   return res.status(401).send({ message: "ACCESS DENIED! AUTHENTICATION TOKEN REQUIRED!" });
-    // }
 
-    // const decoded = jwt.verify(token, "poiuytrewqmnbvcxz");
-    // const userId = decoded._id;
-    const userId='64363a019cb5793a0245004b'
+    const token =
+    
+    console.log(token)
+    if (!token) {
+      return res.status(401).send({ message: "ACCESS DENIED! AUTHENTICATION TOKEN REQUIRED!" });
+    }
+
+    const decoded = jwt.verify(token, "poiuytrewqmnbvcxz");
+    const userId = decoded._id;
+ 
 
     const user = await User.findById({_id:userId});
     if (!user) {
