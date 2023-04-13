@@ -101,7 +101,7 @@ const handleSignin = async (req, res) => {
   res.header("auth-token", token).send(token);
 };
 
-const authenticate = async (req, res, next) => {
+const handleChangePassword = async (req, res) => {
   try {
     const token = req.header("auth-token");
     if (!token) {
@@ -119,8 +119,21 @@ const authenticate = async (req, res, next) => {
     if (!user.verified) {
       return res.status(400).send({ message: "USER NOT VERIFIED! PLEASE VERIFY YOUR ACCOUNT FIRST!" });
     }
-    req.user = user;
-    next();
+
+    const { error } = loginValidation(req, res);
+    if (error) {
+      return res.status(400).send({ message: error.details[0].message });
+    }
+
+    const oldPasswordMatched = await bcrypt.compare(req.body.oldPassword, req.user.password);
+    if (!oldPasswordMatched) {
+      return res.status(401).send({ message: "OLD PASSWORD DIDN'T MATCHED!" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const newpass = await bcrypt.hash(req.body.password, salt);
+    const data = await User.findOneAndUpdate({ _id: req.user._id }, { $set: { password: newpass } });
+    res.send(data);
 
   } catch (error) {
     console.log(error);
@@ -132,36 +145,9 @@ const authenticate = async (req, res, next) => {
 };
 
 
-const changePassword = async (req, res) => {
-  try {
-    const { error } = loginValidation(req, res);
-    if (error) {
-      return res.status(400).send({ message: error.details[0].message });
-    }
-
-    const oldPasswordMatched = await bcrypt.compare(req.body.oldPassword, req.user.password);
-    if (!oldPasswordMatched) {
-      return res.status(401).send({ message: "OLD PASSWORD DIDN'T MATCHED!" });
-    } else {
-
-      const salt = await bcrypt.genSalt(10);
-      const newpass = await bcrypt.hash(req.body.password, salt);
-      const data = await User.findOneAndUpdate({ _id: req.user._id },
-        { $set: { password: newpass } })
-      res.send(data)
-    }
-
-  } catch (error) {
-    console.log(error);
-    return res.status(500).send({ message: "SERVER ERROR!" });
-  }
-};
-
-
 module.exports = {
   handleSignin,
   handleSignup,
   verifyToken,
-  authenticate,
-  changePassword
+  handleChangePassword
 };
